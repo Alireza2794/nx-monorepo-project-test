@@ -1,0 +1,30 @@
+{
+  "name": "product-store.mapper",
+  "$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/store-app/product/core/mapper/product-store.mapper/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/store-app/product/core/mapper/product-store.mapper",
+        "main": "libs/store-app/product/core/mapper/product-store.mapper/src/index.ts",
+        "tsConfig": "libs/store-app/product/core/mapper/product-store.mapper/tsconfig.lib.json",
+        "assets": [
+          "libs/store-app/product/core/mapper/product-store.mapper/*.md"
+        ],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/store-app/product/core/mapper/product-store.mapper/jest.config.ts"
+      }
+    }
+  }
+}

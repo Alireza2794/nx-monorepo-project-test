@@ -1,0 +1,28 @@
+{
+  "name": "product-store.api",
+  "$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/store-app/product/core/api/product-store.api/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/store-app/product/core/api/product-store.api",
+        "main": "libs/store-app/product/core/api/product-store.api/src/index.ts",
+        "tsConfig": "libs/store-app/product/core/api/product-store.api/tsconfig.lib.json",
+        "assets": ["libs/store-app/product/core/api/product-store.api/*.md"],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/store-app/product/core/api/product-store.api/jest.config.ts"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@angular-monorepo/feat-product-store": [
+        "libs/store-app/product/ui/feat-product-store/src/index.ts"
+      ],
+      "@angular-monorepo/product-store.api": [
+        "libs/store-app/product/core/api/product-store.api/src/index.ts"
+      ],
+      "@angular-monorepo/product-store.mapper": [
+        "libs/store-app/product/core/mapper/product-store.mapper/src/index.ts"
+      ],
+      "@angular-monorepo/product-store.mid": [
+        "libs/store-app/product/mid/product-store.mid/src/index.ts"
+      ],
+      "@angular-monorepo/product-store.model": [
+        "libs/store-app/product/model/product-store.model/src/index.ts"
+      ],
+      "@angular-monorepo/ui": ["libs/shared/ui/src/index.ts"],
+      "@angular-monorepo/ui-new-product-store": [
+        "libs/store-app/product/ui/ui-new-product-store/src/index.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
