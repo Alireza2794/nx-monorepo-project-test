@@ -22,7 +22,10 @@
             "input": "apps/store-app/public"
           }
         ],
-        "styles": ["apps/store-app/src/styles.scss"],
+        "styles": [
+          "apps/store-app/src/styles.scss",
+          "libs/store-app/shared/ui/styles/style.scss"
+        ],
         "scripts": []
       },
       "configurations": {

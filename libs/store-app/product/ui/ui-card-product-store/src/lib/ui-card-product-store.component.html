@@ -1,0 +1,18 @@
+<mat-card appearance="outlined">
+  <img mat-card-image [src]="Product.imageUrl" [alt]="Product.title" />
+  <mat-card-content>
+    <div>
+      <h1>{{ Product.title }}</h1>
+      <span>$ {{ Product.price }}</span>
+    </div>
+
+    <p>
+      {{ Product.description }}
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button class="primary-button" (click)="AddToCart(Product.id)">
+      Add To Cart
+    </button>
+  </mat-card-actions>
+</mat-card>

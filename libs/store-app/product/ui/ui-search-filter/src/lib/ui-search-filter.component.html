@@ -1,0 +1,17 @@
+<form>
+  <input
+    type="text"
+    [formControl]="searchText"
+    placeholder="search by title ...."
+  />
+  @if (searchText.value) {
+  <button
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="reset()"
+  >
+    x
+  </button>
+  }
+</form>

@@ -1,4 +1,22 @@
-<p>FeatProductStore works!</p>
+<!-- Add New Product Button -->
+<header>
+  <button class="primary-button" (click)="openDialog()">Add Product</button>
 
+  <lib-ui-search-filter (inputChange)="onSearchFilter($event)"></lib-ui-search-filter>
+</header>
 
-<lib-ui-new-product-store></lib-ui-new-product-store>
+<!-- Product List -->
+<section>
+  @defer { @for (item of filteredList(); track item.id) {
+  <div>
+    <lib-ui-card-product-store
+      [Product]="item"
+      (addToCart)="addToCart($event)"
+    ></lib-ui-card-product-store>
+  </div>
+  } @empty {
+  <p>Product List is Empty</p>
+  } } @placeholder (minimum 1000ms){
+  <p>Loading...</p>
+  }
+</section>

@@ -1,0 +1,67 @@
+.primary-button {
+  margin-top: 10px !important;
+  appearance: none !important;
+  backface-visibility: hidden !important;
+  background-color: #2f80ed !important;
+  border-radius: 10px !important;
+  border-style: none !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  font-family: Inter, -apple-system, system-ui, 'Segoe UI', Helvetica, Arial,
+    sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  height: 50px !important;
+  letter-spacing: normal !important;
+  line-height: 1.5 !important;
+  outline: none !important;
+  overflow: hidden !important;
+  padding: 14px 30px !important;
+  position: relative !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  transform: translate3d(0, 0, 0) !important;
+  transition: all 0.3s !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  touch-action: manipulation !important;
+  vertical-align: top !important;
+  white-space: nowrap !important;
+
+  &:hover {
+    background-color: #1366d6 !important;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 5px 30px, rgba(0, 0, 0, 0.05) 0 1px 4px !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition-duration: 0.35s !important;
+  }
+
+  &:hover:after {
+    opacity: 0.5 !important;
+  }
+
+  &:active {
+    box-shadow: rgba(0, 0, 0, 0.1) 0 3px 6px 0, rgba(0, 0, 0, 0.1) 0 0 10px 0,
+      rgba(0, 0, 0, 0.1) 0 1px 4px -1px !important;
+    transform: translateY(2px) !important;
+    transition-duration: 0.35s !important;
+  }
+
+  &:active:after {
+    opacity: 1 !important;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 768px) {
+  .primary-button {
+    padding: 14px 22px !important;
+    width: 176px !important;
+  }
+}

@@ -1,0 +1,55 @@
+article {
+  padding: 1rem;
+  height: 100%;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    mat-form-field {
+      width: 100%;
+      margin: 0.25rem 0;
+
+      ::ng-deep {
+        .mdc-text-field--outlined {
+          --mdc-outlined-text-field-container-shape: 28px;
+        }
+      }
+
+      mat-error {
+        color: red;
+        font-size: 12px;
+      }
+    }
+
+    .imag-box {
+      display: flex;
+      flex-direction: column;
+      img {
+        width: 200px;
+        height: 180px;
+        border-radius: 15px;
+        min-width: 200px;
+        max-width: 200px;
+        min-height: 180px;
+        max-height: 180px;
+        margin-top: 0.5rem;
+      }
+    }
+
+    .button-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+  }
+}

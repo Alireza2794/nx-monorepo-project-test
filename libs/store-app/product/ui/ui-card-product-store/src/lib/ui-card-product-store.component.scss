@@ -1,0 +1,25 @@
+mat-card {
+  max-width: 320px;
+  max-height: 500px;
+  background-color: #fff;
+  border-radius: 15px;
+  border: 0;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  min-height: 500px;
+  min-width: 320px;
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  p {
+    min-height: 90px;
+    max-height: 90px;
+  }
+
+  mat-card-actions {
+    justify-content: center !important;
+  }
+}

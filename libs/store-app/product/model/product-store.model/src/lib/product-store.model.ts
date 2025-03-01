@@ -1,3 +1,7 @@
-export function productStoreModel(): string {
-  return 'product-store.model';
+export interface ProductModel {
+  id: number;
+  title: string;
+  description: string;
+  price: string;
+  imageUrl: string;
 }

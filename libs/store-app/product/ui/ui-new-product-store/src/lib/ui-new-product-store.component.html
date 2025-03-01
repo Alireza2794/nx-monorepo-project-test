@@ -1,1 +1,63 @@
-<p>UiNewProductStore works!</p>
+<article>
+  <header>
+    <h2 mat-dialog-title>Product Form</h2>
+    <button mat-button (click)="onClose()">Close</button>
+  </header>
+  <form [formGroup]="productForm">
+    <div>
+      <!-- Title -->
+      <mat-form-field appearance="outline">
+        <mat-label>Product Title:</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          required
+          [errorStateMatcher]="matcher"
+        />
+        @if (productForm.get('title')?.errors) {
+        <mat-error>Title is <strong>required</strong></mat-error>
+        }
+      </mat-form-field>
+      <!-- Description -->
+      <mat-form-field appearance="outline">
+        <mat-label>Product Description:</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          required
+          [errorStateMatcher]="matcher"
+        ></textarea>
+        @if (productForm.get('description')?.errors) {
+        <mat-error>Description is <strong>required</strong></mat-error>
+        }
+      </mat-form-field>
+      <!-- Price -->
+      <mat-form-field appearance="outline">
+        <mat-label>Product Price:</mat-label>
+        <input
+          matInput
+          formControlName="price"
+          required
+          [errorStateMatcher]="matcher"
+        />
+        @if (productForm.get('price')?.errors) {
+        <mat-error>Price is <strong>required</strong></mat-error>
+        }
+      </mat-form-field>
+      <!-- Image -->
+      <div class="imag-box">
+        <input #Image type="file" (change)="handleFileInput($event.target)" />
+
+        @if(productForm.get('imageUrl')?.value){
+        <img [src]="productForm.get('imageUrl')?.value" alt="" />
+        }
+      </div>
+    </div>
+
+    <div class="button-section">
+      <button mat-button (click)="onSubmit()" [disabled]="productForm.invalid" class="primary-button">
+        Add Product
+      </button>
+    </div>
+  </form>
+</article>

@@ -1,0 +1,15 @@
+form {
+  position: relative;
+
+  input:focus,
+  input:valid {
+    border-radius: 0.25em;
+    padding: 0.75em 1em;
+    height: 20px;
+  }
+
+  button {
+    position: absolute;
+    right: 0;
+  }
+}
