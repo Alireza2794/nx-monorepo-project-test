@@ -1,36 +1,30 @@
-import { ProductModel } from '@angular-monorepo/product-store.model';
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  FormsModule,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  ProductFormModel,
+  ProductModel,
+} from '@angular-monorepo/product-store.model';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  Signal,
+} from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
+export interface DialogData {
+  Form: FormGroup;
+  handleFile: (input: File | Event) => void;
+  fileUrlFinall: Signal<string>;
+  oldData?: any;
+  isEdit?: boolean;
 }
+
 @Component({
   selector: 'lib-ui-new-product-store',
   imports: [
@@ -40,54 +34,44 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogClose,
   ],
   templateUrl: './ui-new-product-store.component.html',
   styleUrl: './ui-new-product-store.component.scss',
 })
 export class UiNewProductStoreComponent implements OnInit {
-  readonly dialogRef = inject(MatDialogRef<UiNewProductStoreComponent>);
-  private _fb: FormBuilder = inject(FormBuilder);
+  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+  productForm!: FormGroup<ProductFormModel>;
+  isEdit = signal<boolean>(false);
 
-  productForm!: FormGroup<any>;
-
-  matcher = new MyErrorStateMatcher();
-
-  fileToUpload: any = null;
-
-  ngOnInit() {
-    this.createForm();
-  }
-
-  createForm() {
-    this.productForm = this._fb.group({
-      id: null,
-      title: new FormControl('', [Validators.required]),
-      description: new FormControl('', [Validators.required]),
-      price: new FormControl('', [Validators.required]),
-      imageUrl: new FormControl('', [Validators.required]),
+  constructor() {
+    effect(() => {
+      this.productForm.patchValue({
+        imageUrl: this.data.fileUrlFinall() ?? '',
+      });
     });
   }
 
-  handleFileInput(event: any) {
-    this.fileToUpload = event.files[0];
+  ngOnInit() {
+    this.productForm = this.data.Form ?? null;
 
-    //Show image preview
-    const reader = new FileReader();
-    reader.onload = (event: any) => {
-      this.productForm.get('imageUrl')?.setValue(event.target.result);
-    };
-    reader.readAsDataURL(this.fileToUpload);
-  }
-
-  onSubmit() {
-    if (this.productForm.invalid) {
-      return console.log('Complate Form');
+    if (this.data.isEdit) {
+      this.isEdit.set(this.data.isEdit);
+      this.productForm.patchValue({
+        id: this.data.oldData.id,
+        title: this.data.oldData.title,
+        price: this.data.oldData.price,
+        description: this.data.oldData.description,
+        imageUrl: this.data.oldData.imageUrl,
+      });
     }
-
-    this.dialogRef.close(this.productForm.value);
   }
 
-  onClose() {
-    this.dialogRef.close(null);
+  handleFileInput(event: Event) {
+    this.data.handleFile(event);
+  }
+
+  ngOnDestroy() {
+    this.productForm.reset();
   }
 }

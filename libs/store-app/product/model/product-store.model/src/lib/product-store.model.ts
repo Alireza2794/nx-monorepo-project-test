@@ -1,3 +1,4 @@
+
 export interface ProductModel {
   id: number;
   title: string;
@@ -5,3 +6,7 @@ export interface ProductModel {
   price: string;
   imageUrl: string;
 }
+
+export type ProductFormModel = {
+  [k in keyof ProductModel]: any;
+};

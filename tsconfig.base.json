@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2020" , "es2023", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -30,8 +30,11 @@
       "@angular-monorepo/product-store.model": [
         "libs/store-app/product/model/product-store.model/src/index.ts"
       ],
-      "@angular-monorepo/ui-search-filter": [
-        "libs/store-app/product/ui/ui-search-filter/src/index.ts"
+      "@angular-monorepo/product-store.state": [
+        "libs/store-app/product/core/state/product-store.state/src/index.ts"
+      ],
+      "@angular-monorepo/product-store.utility": [
+        "libs/store-app/product/core/utility/product-store.utility/src/index.ts"
       ],
       "@angular-monorepo/ui": ["libs/shared/ui/src/index.ts"],
       "@angular-monorepo/ui-card-product-store": [
@@ -42,6 +45,9 @@
       ],
       "@angular-monorepo/ui-new-product-store": [
         "libs/store-app/product/ui/ui-new-product-store/src/index.ts"
+      ],
+      "@angular-monorepo/ui-search-filter": [
+        "libs/store-app/product/ui/ui-search-filter/src/index.ts"
       ]
     }
   },

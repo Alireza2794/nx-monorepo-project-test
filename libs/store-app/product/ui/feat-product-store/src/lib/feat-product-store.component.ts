@@ -5,9 +5,9 @@ import { UiNewProductStoreComponent } from '@angular-monorepo/ui-new-product-sto
 import { UiSearchFilterComponent } from '@angular-monorepo/ui-search-filter';
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnInit,
   signal,
@@ -27,63 +27,103 @@ import { Observable } from 'rxjs';
   ],
   templateUrl: './feat-product-store.component.html',
   styleUrl: './feat-product-store.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeatProductStoreComponent implements OnInit {
   private _mid: ProductStoreMid = inject(ProductStoreMid);
   readonly dialog = inject(MatDialog);
 
-  searchFilter = signal<string>('');
+  // searchFilter = signal<string>('');
 
-  public data$: Observable<ProductModel[]> = this._mid.getProductList$();
+  // public data$: Observable<ProductModel[]> = this._mid.getProductList$();
+  // public data$: Observable<ProductModel[]> ;
 
-  public ProductList: WritableSignal<ProductModel[]> = signal([]);
+  // public ProductList: WritableSignal<ProductModel[]> = signal([]);
 
-  public filteredList = computed(() => {
-    return this.filterData();
-  });
-
-  constructor() {
-    effect(() => {
-      this.filterData();
-    });
-  }
+  // public filteredList = computed(() => {
+  //   return this.ProductList().filter((item) =>
+  //     item.title.includes(this.searchFilter())
+  //   );
+  // });
 
   ngOnInit() {
     this.getListData();
   }
 
-  getListData() {
-    this.data$.subscribe((res: ProductModel[]) => {
-      this.ProductList.set(res);
-    });
+  store$() {
+    return this._mid.store;
   }
 
-  filterData() {
-    return this.ProductList().filter((item) =>
-      item.title.includes(this.searchFilter())
-    );
+  getListData() {
+    const query = this._mid.store_query$();
+    this._mid.getProductList$(query);
+
+    // this.data$.subscribe((res: ProductModel[]) => {
+    //   this.ProductList.set([...res]);
+    // });
   }
 
   onSearchFilter(event: string) {
-    this.searchFilter.set(event);
+    // this.searchFilter.set(event);
+    this._mid.updateQuery(event);
+    this.getListData();
   }
 
-  openDialog(): void {
+  openDialog(id: number, type: 'new' | 'edit'): void {
     const dialogRef = this.dialog.open(UiNewProductStoreComponent, {
       minWidth: '50dvw',
       width: '50dvw',
       height: '50dvh',
+      data: type === 'new' ? this.onNew() : this.onEdit(id),
     });
 
     dialogRef.afterClosed().subscribe((result: ProductModel) => {
       if (result !== undefined && result !== null) {
-        this._mid.insertProduct$(result);
+        if (type === 'new') {
+          this._mid.insertProduct$(result);
+        } else {
+          this._mid.updateProduct$(result);
+        }
+
         this.getListData();
+        this._mid.fileUrlFinall.set('');
       }
     });
   }
 
   addToCart(event: number) {
     console.log(event);
+  }
+
+  onNew() {
+    return {
+      Form: this._mid.getProductForm(),
+      handleFile: this._mid.uploadImage.bind(this._mid),
+      fileUrlFinall: this._mid.fileUrlFinall,
+    };
+  }
+
+  onEdit(id: number) {
+    const findProduct = this.store$()
+      .products()
+      .find((item) => item.id === id);
+
+    if (findProduct) {
+      this._mid.fileUrlFinall.set(findProduct.imageUrl);
+
+      return {
+        Form: this._mid.getProductForm(),
+        handleFile: this._mid.uploadImage.bind(this._mid),
+        fileUrlFinall: this._mid.fileUrlFinall,
+        oldData: findProduct,
+        isEdit: true,
+      };
+    } else {
+      return;
+    }
+  }
+
+  onRemove(id: number) {
+    this._mid.removeProduct$(id);
   }
 }

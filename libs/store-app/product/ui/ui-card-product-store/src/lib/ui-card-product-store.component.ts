@@ -13,8 +13,18 @@ import { ProductModel } from '@angular-monorepo/product-store.model';
 export class UiCardProductStoreComponent {
   @Input() Product: ProductModel | any;
   @Output() addToCart: EventEmitter<number> = new EventEmitter();
+  @Output() edit: EventEmitter<number> = new EventEmitter();
+  @Output() remove: EventEmitter<number> = new EventEmitter();
 
   AddToCart(id: number) {
     this.addToCart.emit(id);
+  }
+
+  Edit(id: number) {
+    this.edit.emit(id);
+  }
+
+  Remove(id: number) {
+    this.remove.emit(id);
   }
 }

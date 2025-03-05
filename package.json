@@ -15,8 +15,10 @@
     "@angular/platform-browser": "~19.1.0",
     "@angular/platform-browser-dynamic": "~19.1.0",
     "@angular/router": "~19.1.0",
+    "@ngrx/signals": "^19.0.1",
     "rxjs": "~7.8.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "@ngrx/operators": "^19.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~19.1.0",
@@ -27,6 +29,9 @@
     "@angular/language-service": "~19.1.0",
     "@angular/material": "^19.1.5",
     "@eslint/js": "^9.8.0",
+    "@nestjs/schematics": "^10.0.1",
+    "@ngrx/operators": "^19.0.1",
+    "@ngrx/signals": "^19.0.1",
     "@nx/angular": "20.4.6",
     "@nx/cypress": "20.4.6",
     "@nx/esbuild": "20.4.6",

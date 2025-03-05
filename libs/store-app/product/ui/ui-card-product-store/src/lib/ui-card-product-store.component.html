@@ -6,6 +6,13 @@
       <span>$ {{ Product.price }}</span>
     </div>
 
+    <div>
+      <button mat-button (click)="Edit(Product.id)">Edit</button>
+      <button mat-button (click)="Remove(Product.id)" style="margin-left: 1rem">
+        Remove
+      </button>
+    </div>
+
     <p>
       {{ Product.description }}
     </p>
