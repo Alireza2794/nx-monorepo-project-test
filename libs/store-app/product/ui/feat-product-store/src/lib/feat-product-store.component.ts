@@ -56,6 +56,7 @@ export class FeatProductStoreComponent implements OnInit {
     const query = this._mid.store_query$();
     this._mid.getProductList$(query);
 
+
     //  old code without store for show product list
 
     // this.data$.subscribe((res: ProductModel[]) => {

@@ -46,12 +46,18 @@ export const ProductsStore = signalStore(
   withMethods((store, api = inject(ProductStoreApi)) => ({
     // For upadate query filter
     updateQuery(query: string): void {
-      patchState(store, (state) => ({ filter: { ...state.filter, query } }));
+      patchState(store, (state) => ({
+        filter: { ...state.filter, query },
+        isLoading: true,
+      }));
     },
 
     // For upadate sort by order filter
     updateOrder(order: 'asc' | 'desc'): void {
-      patchState(store, (state) => ({ filter: { ...state.filter, order } }));
+      patchState(store, (state) => ({
+        filter: { ...state.filter, order },
+        isLoading: true,
+      }));
     },
 
     // For add product
