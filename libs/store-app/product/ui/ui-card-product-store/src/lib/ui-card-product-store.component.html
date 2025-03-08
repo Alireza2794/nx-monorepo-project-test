@@ -1,22 +1,31 @@
 <mat-card appearance="outlined">
+  <!-- product image -->
   <img mat-card-image [src]="Product.imageUrl" [alt]="Product.title" />
   <mat-card-content>
+    <!-- card content -->
     <div>
+      <!-- title -->
       <h1>{{ Product.title }}</h1>
+      <!-- price -->
       <span>$ {{ Product.price }}</span>
     </div>
 
     <div>
+      <!-- edit button -->
       <button mat-button (click)="Edit(Product.id)">Edit</button>
+      <!-- remove button -->
       <button mat-button (click)="Remove(Product.id)" style="margin-left: 1rem">
         Remove
       </button>
     </div>
 
+    <!-- description -->
     <p>
       {{ Product.description }}
     </p>
   </mat-card-content>
+
+  <!-- Add to cart button -->
   <mat-card-actions>
     <button class="primary-button" (click)="AddToCart(Product.id)">
       Add To Cart

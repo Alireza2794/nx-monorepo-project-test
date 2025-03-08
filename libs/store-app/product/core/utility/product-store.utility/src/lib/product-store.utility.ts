@@ -15,6 +15,7 @@ export class ProductStoreUtility {
 
   fileUrlFinall = signal<string>('');
 
+  // create product form and sent to dialog
   createProductForm(): FormGroup<ProductFormModel> {
     return this._fb.group({
       id: null,
@@ -25,6 +26,7 @@ export class ProductStoreUtility {
     });
   }
 
+  // handle uploade file
   handleFileInput(input: File | Event): void {
     let file: File | null | any = null;
 

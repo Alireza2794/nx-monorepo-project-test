@@ -42,9 +42,13 @@ export interface DialogData {
 export class UiNewProductStoreComponent implements OnInit {
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);
   productForm!: FormGroup<ProductFormModel>;
+
+  // for change mode status
   isEdit = signal<boolean>(false);
 
   constructor() {
+
+    // set finall url file uploaded signal to form after change
     effect(() => {
       this.productForm.patchValue({
         imageUrl: this.data.fileUrlFinall() ?? '',
@@ -53,10 +57,15 @@ export class UiNewProductStoreComponent implements OnInit {
   }
 
   ngOnInit() {
+    // get empty form in first load
     this.productForm = this.data.Form ?? null;
 
+
     if (this.data.isEdit) {
+      // change mode to edit
       this.isEdit.set(this.data.isEdit);
+
+      // patch data to form
       this.productForm.patchValue({
         id: this.data.oldData.id,
         title: this.data.oldData.title,
@@ -67,6 +76,7 @@ export class UiNewProductStoreComponent implements OnInit {
     }
   }
 
+  // function fo sent input event to utility service for upload file
   handleFileInput(event: Event) {
     this.data.handleFile(event);
   }

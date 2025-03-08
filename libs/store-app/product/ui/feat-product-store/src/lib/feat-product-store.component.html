@@ -1,6 +1,6 @@
-<!-- Add New Product Button -->
+<!-- Add New Product Button and search box -->
 <header>
-  <button class="primary-button" (click)="openDialog(0, 'new')">
+  <button class="primary-button" (click)="openDialog(0)">
     Add Product
   </button>
 
@@ -11,6 +11,7 @@
 
 <!-- Product List -->
 <section>
+  <!-- old code without store for show product list -->
   <!-- @defer { @for (item of filteredList(); track item.id) {
   <div>
     <lib-ui-card-product-store
@@ -32,7 +33,7 @@
     <lib-ui-card-product-store
       [Product]="item"
       (addToCart)="addToCart($event)"
-      (edit)="openDialog($event, 'edit')"
+      (edit)="openDialog($event)"
       (remove)="onRemove($event)"
     ></lib-ui-card-product-store>
   </div>
