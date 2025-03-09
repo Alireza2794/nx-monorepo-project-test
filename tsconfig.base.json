@@ -10,13 +10,28 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020" , "es2023", "dom"],
+    "lib": ["es2020", "es2023", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@angular-monorepo/feat-layout-store": [
+        "libs/store-app/layout/ui/feat-layout-store/src/index.ts"
+      ],
       "@angular-monorepo/feat-product-store": [
         "libs/store-app/product/ui/feat-product-store/src/index.ts"
+      ],
+      "@angular-monorepo/layout-store.api": [
+        "libs/store-app/layout/core/api/layout-store.api/src/index.ts"
+      ],
+      "@angular-monorepo/layout-store.mid": [
+        "libs/store-app/layout/mid/layout-store.mid/src/index.ts"
+      ],
+      "@angular-monorepo/layout-store.model": [
+        "libs/store-app/layout/model/layout-store.model/src/index.ts"
+      ],
+      "@angular-monorepo/layout-store.state": [
+        "libs/store-app/layout/core/state/layout-store.state/src/index.ts"
       ],
       "@angular-monorepo/product-store.api": [
         "libs/store-app/product/core/api/product-store.api/src/index.ts"
@@ -36,9 +51,18 @@
       "@angular-monorepo/product-store.utility": [
         "libs/store-app/product/core/utility/product-store.utility/src/index.ts"
       ],
+      "@angular-monorepo/store-app.state": [
+        "libs/store-app/shared/core/store-app.state/src/index.ts"
+      ],
+      "@angular-monorepo/store-main.state": [
+        "libs/store-app/core/state/store-main.state/src/index.ts"
+      ],
       "@angular-monorepo/ui": ["libs/shared/ui/src/index.ts"],
       "@angular-monorepo/ui-card-product-store": [
         "libs/store-app/product/ui/ui-card-product-store/src/index.ts"
+      ],
+      "@angular-monorepo/ui-header-store": [
+        "libs/store-app/layout/ui/ui-header-store/src/index.ts"
       ],
       "@angular-monorepo/ui-list-product-store": [
         "libs/store-app/product/ui/ui-list-product-store/src/index.ts"

@@ -56,7 +56,6 @@ export class FeatProductStoreComponent implements OnInit {
     const query = this._mid.store_query$();
     this._mid.getProductList$(query);
 
-
     //  old code without store for show product list
 
     // this.data$.subscribe((res: ProductModel[]) => {
@@ -107,8 +106,8 @@ export class FeatProductStoreComponent implements OnInit {
   }
 
   // add product to cart
-  addToCart(event: number) {
-    console.log(event);
+  addToCart(product: ProductModel) {
+    this._mid.onAddToCart(product);
   }
 
   // return dialog data and sent to dialog for add new product

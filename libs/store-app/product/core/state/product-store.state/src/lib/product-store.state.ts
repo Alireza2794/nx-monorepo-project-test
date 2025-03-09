@@ -1,5 +1,10 @@
+import { LayoutStoreApi } from '@angular-monorepo/layout-store.api';
 import { ProductStoreApi } from '@angular-monorepo/product-store.api';
-import { ProductModel } from '@angular-monorepo/product-store.model';
+import {
+  OrdersModel,
+  ProductModel,
+} from '@angular-monorepo/product-store.model';
+import { CartStore } from '@angular-monorepo/store-main.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
@@ -26,6 +31,20 @@ const initialState: ProductsState = {
   filter: { query: '', order: 'asc' },
 };
 
+type OrdersState = {
+  orders: OrdersModel;
+  isLoading: boolean;
+};
+
+const initialOrderState: OrdersState = {
+  orders: {
+    totalCount: 0,
+    totalAmount: 0,
+    Items: [],
+  },
+  isLoading: false,
+};
+
 export const ProductsStore = signalStore(
   { providedIn: 'root' },
 
@@ -48,7 +67,6 @@ export const ProductsStore = signalStore(
     updateQuery(query: string): void {
       patchState(store, (state) => ({
         filter: { ...state.filter, query },
-        isLoading: true,
       }));
     },
 
@@ -56,7 +74,6 @@ export const ProductsStore = signalStore(
     updateOrder(order: 'asc' | 'desc'): void {
       patchState(store, (state) => ({
         filter: { ...state.filter, order },
-        isLoading: true,
       }));
     },
 
@@ -117,4 +134,46 @@ export const ProductsStore = signalStore(
       )
     ),
   }))
+);
+
+export const OrdersStore = signalStore(
+  { providedIn: 'root' },
+
+  // Set by first state
+  withState(initialOrderState),
+  // Methods
+  withMethods(
+    (store, api = inject(ProductStoreApi), cartStore = inject(CartStore)) => ({
+      // Add product to cart
+      addToCart: (product: ProductModel) => {
+        const updatedCartItems = [...store.orders().Items, product];
+        const updatedTotalAmount = updatedCartItems.reduce(
+          (sum, item) => sum + Number(item.price),
+          0
+        );
+        const updatedOrderCount = updatedCartItems.length;
+
+        const orders = {
+          Items: updatedCartItems,
+          totalAmount: updatedTotalAmount,
+          totalCount: updatedOrderCount,
+        };
+        // Update local cart state
+        patchState(store, {
+          orders: orders,
+        });
+
+        // Sync product state to main store (ProductStore)
+        api.addToCart$(orders);
+
+        const headerData = {
+          orderCount: updatedOrderCount,
+          totalAmount: updatedTotalAmount,
+        };
+
+        // Sync cart data to layout store to update header
+        cartStore.updateProduct(headerData);
+      },
+    })
+  )
 );

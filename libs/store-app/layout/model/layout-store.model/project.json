@@ -1,0 +1,28 @@
+{
+  "name": "layout-store.model",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/store-app/layout/model/layout-store.model/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/store-app/layout/model/layout-store.model",
+        "main": "libs/store-app/layout/model/layout-store.model/src/index.ts",
+        "tsConfig": "libs/store-app/layout/model/layout-store.model/tsconfig.lib.json",
+        "assets": ["libs/store-app/layout/model/layout-store.model/*.md"],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/store-app/layout/model/layout-store.model/jest.config.ts"
+      }
+    }
+  }
+}

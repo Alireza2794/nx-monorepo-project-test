@@ -1,0 +1,10 @@
+<header>
+  <lib-ui-header-store
+    [orderCount]="store$().orderCount()"
+    (clickCart)="clickCart($event)"
+  ></lib-ui-header-store>
+</header>
+
+<article>
+  <router-outlet></router-outlet>
+</article>

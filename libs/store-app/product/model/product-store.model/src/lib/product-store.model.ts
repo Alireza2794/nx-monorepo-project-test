@@ -1,4 +1,3 @@
-
 export interface ProductModel {
   id: number;
   title: string;
@@ -10,3 +9,9 @@ export interface ProductModel {
 export type ProductFormModel = {
   [k in keyof ProductModel]: any;
 };
+
+export interface OrdersModel {
+  totalCount: number;
+  totalAmount: number;
+  Items: ProductModel[];
+}

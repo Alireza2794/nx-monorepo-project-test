@@ -1,0 +1,16 @@
+header {
+  background-color: #9e9e9e73;
+
+  .mat-toolbar-row,
+  .mat-toolbar-single-row {
+    justify-content: space-between !important;
+  }
+
+  button {
+    margin-right: 1rem;
+  }
+
+  span {
+    font-weight: bolder;
+  }
+}

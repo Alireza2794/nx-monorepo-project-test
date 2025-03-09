@@ -1,4 +1,7 @@
-import { ProductModel } from '@angular-monorepo/product-store.model';
+import {
+  OrdersModel,
+  ProductModel,
+} from '@angular-monorepo/product-store.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -46,5 +49,21 @@ export class ProductStoreApi {
     if (productIndex !== -1) {
       this.data.splice(productIndex, 1);
     }
+  }
+
+  cartData = {
+    totalCount: 0,
+    totalAmount: 0,
+    Items: [] as ProductModel[],
+  };
+
+  getCartData$(): Observable<OrdersModel> {
+    return of(this.cartData);
+  }
+
+  addToCart$(body: OrdersModel) {
+    this.cartData.totalCount = body.totalCount;
+    this.cartData.totalAmount = body.totalAmount;
+    this.cartData.Items = body.Items;
   }
 }

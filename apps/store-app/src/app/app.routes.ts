@@ -1,3 +1,4 @@
+import { FeatLayoutStoreComponent } from '@angular-monorepo/feat-layout-store';
 import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
@@ -7,10 +8,16 @@ export const appRoutes: Route[] = [
     pathMatch: 'full',
   },
   {
-    path: 'product',
-    loadChildren: () =>
-      import('@angular-monorepo/feat-product-store').then(
-        (m) => m.featProductStoreRoutes
-      ),
+    path: '',
+    component: FeatLayoutStoreComponent,
+    children: [
+      {
+        path: 'product',
+        loadChildren: () =>
+          import('@angular-monorepo/feat-product-store').then(
+            (m) => m.featProductStoreRoutes
+          ),
+      },
+    ],
   },
 ];

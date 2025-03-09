@@ -1,0 +1,28 @@
+{
+  "name": "store-main.state",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/store-app/core/state/store-main.state/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/store-app/core/state/store-main.state",
+        "main": "libs/store-app/core/state/store-main.state/src/index.ts",
+        "tsConfig": "libs/store-app/core/state/store-main.state/tsconfig.lib.json",
+        "assets": ["libs/store-app/core/state/store-main.state/*.md"],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/store-app/core/state/store-main.state/jest.config.ts"
+      }
+    }
+  }
+}

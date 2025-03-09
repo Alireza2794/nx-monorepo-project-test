@@ -1,6 +1,9 @@
 import { ProductStoreApi } from '@angular-monorepo/product-store.api';
 import { ProductModel } from '@angular-monorepo/product-store.model';
-import { ProductsStore } from '@angular-monorepo/product-store.state';
+import {
+  OrdersStore,
+  ProductsStore,
+} from '@angular-monorepo/product-store.state';
 import { ProductStoreUtility } from '@angular-monorepo/product-store.utility';
 import { inject, Injectable, signal } from '@angular/core';
 
@@ -11,6 +14,7 @@ export class ProductStoreMid {
   private _api: ProductStoreApi = inject(ProductStoreApi);
   private _utility: ProductStoreUtility = inject(ProductStoreUtility);
   readonly store = inject(ProductsStore);
+  readonly orderStore = inject(OrdersStore);
 
   // File Upladed value to sent product form
   fileUrlFinall = signal<string>('');
@@ -63,5 +67,9 @@ export class ProductStoreMid {
   // uploade file or image methode
   uploadImage(input: File | Event): void {
     return this._utility.handleFileInput(input);
+  }
+
+  onAddToCart(product: ProductModel) {
+    this.orderStore.addToCart(product);
   }
 }
