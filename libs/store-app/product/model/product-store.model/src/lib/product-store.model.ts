@@ -4,6 +4,7 @@ export interface ProductModel {
   description: string;
   price: string;
   imageUrl: string;
+  countSelected?: number;
 }
 
 export type ProductFormModel = {
@@ -14,4 +15,7 @@ export interface OrdersModel {
   totalCount: number;
   totalAmount: number;
   Items: ProductModel[];
+}
+export interface ApiResponce {
+  data: ProductModel[];
 }

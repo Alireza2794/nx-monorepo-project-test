@@ -108,6 +108,18 @@ export class FeatProductStoreComponent implements OnInit {
   // add product to cart
   addToCart(product: ProductModel) {
     this._mid.onAddToCart(product);
+    product.countSelected = product.countSelected
+      ? product.countSelected + 1
+      : 1;
+
+    this._mid.updateProduct$(product);
+  }
+
+  // remove From to cart
+  removeFromCart(product: ProductModel) {
+    this._mid.onRemoveFromCart(product);
+    product.countSelected = 0;
+    this._mid.updateProduct$(product);
   }
 
   // return dialog data and sent to dialog for add new product

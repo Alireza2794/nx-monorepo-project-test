@@ -15,6 +15,7 @@ export class UiCardProductStoreComponent {
   @Output() addToCart: EventEmitter<ProductModel> = new EventEmitter();
   @Output() edit: EventEmitter<number> = new EventEmitter();
   @Output() remove: EventEmitter<number> = new EventEmitter();
+  @Output() removeFromCart: EventEmitter<ProductModel> = new EventEmitter();
 
   AddToCart(product: ProductModel) {
     this.addToCart.emit(product);
@@ -26,5 +27,9 @@ export class UiCardProductStoreComponent {
 
   Remove(id: number) {
     this.remove.emit(id);
+  }
+
+  RemoveFromCart(product: ProductModel) {
+    this.removeFromCart.emit(product);
   }
 }

@@ -72,4 +72,8 @@ export class ProductStoreMid {
   onAddToCart(product: ProductModel) {
     this.orderStore.addToCart(product);
   }
+
+  onRemoveFromCart(product: ProductModel) {
+    this.orderStore.removeFromCart(product);
+  }
 }

@@ -79,40 +79,57 @@ export const ProductsStore = signalStore(
 
     // For add product
     addProduct(product: ProductModel): void {
+      api.insertProduct$(product).subscribe(() => {
+        patchState(store, { products: [...store.products(), product] });
+      });
+
       // sent to api
-      api.insertProduct$(product);
+      // api.insertProduct$(product);
       // update store
-      patchState(store, { products: [...store.products(), product] });
+      // patchState(store, { products: [...store.products(), product] });
     },
 
     //For  update product
     updateProduct: (product: ProductModel) => {
+      api.updateProduct$(product).subscribe(() => {
+        // update store
+        updateEntity({
+          id: product.id,
+          changes: (item) => (item = product),
+        });
+
+        patchState(store, {
+          products: store
+            .products()
+            .map((p) => (p.id === product.id ? { ...p, ...product } : p)),
+        });
+      });
+
       // sent to api
-      api.updateProduct$(product);
+      // api.updateProduct$(product);
       // update store
-      updateEntity({
-        id: product.id,
-        changes: (item) => (item = product),
-      });
+      // updateEntity({
+      //   id: product.id,
+      //   changes: (item) => (item = product),
+      // });
 
-      const allItems = [...store.products()];
-      const index = allItems.findIndex((x) => x.id === product.id);
-      allItems[index] = product;
+      // const allItems = [...store.products()];
+      // const index = allItems.findIndex((x) => x.id === product.id);
+      // allItems[index] = product;
 
-      patchState(store, {
-        products: allItems,
-      });
+      // patchState(store, {
+      //   products: allItems,
+      // });
     },
 
     // For remove product
     removeProduct: (id: number) => {
       // sent to api
-      api.removeProduct$(id);
-
-      // update store
-      removeEntity(id);
-      patchState(store, {
-        products: [...store.products().filter((x) => x.id !== id)],
+      api.removeProduct$(id).subscribe(() => {
+        removeEntity(id);
+        patchState(store, {
+          products: store.products().filter((p) => p.id !== id),
+        });
       });
     },
 
@@ -125,7 +142,8 @@ export const ProductsStore = signalStore(
         switchMap((query) => {
           return api.getProductData$(query).pipe(
             tapResponse({
-              next: (products) => patchState(store, { products: products }),
+              next: (response) =>
+                patchState(store, { products: response.data }),
               error: (error: HttpErrorResponse) => console.log(error.message),
               finalize: () => patchState(store, { isLoading: false }),
             })
@@ -164,8 +182,42 @@ export const OrdersStore = signalStore(
         });
 
         // Sync product state to main store (ProductStore)
-        api.addToCart$(orders);
+        api.updateCart$(orders);
 
+        const headerData = {
+          orderCount: updatedOrderCount,
+          totalAmount: updatedTotalAmount,
+        };
+
+        // Sync cart data to layout store to update header
+        cartStore.updateProduct(headerData);
+      },
+
+      // Remove product to cart
+      removeFromCart: (product: ProductModel) => {
+        const updatedCartItems = store
+          .orders()
+          .Items.filter((item) => item.id !== product.id);
+        const updatedTotalAmount = updatedCartItems.reduce(
+          (sum, item) => sum + Number(item.price),
+          0
+        );
+        const updatedOrderCount = updatedCartItems.length;
+
+        const orders = {
+          Items: updatedCartItems,
+          totalAmount: updatedOrderCount,
+          totalCount: updatedOrderCount,
+        };
+        // Update local cart state
+        patchState(store, {
+          orders: orders,
+        });
+
+        // Sync product state to main store (ProductStore)
+        api.updateCart$(orders);
+
+        // Announce to OrdersStore (update cart items count)
         const headerData = {
           orderCount: updatedOrderCount,
           totalAmount: updatedTotalAmount,

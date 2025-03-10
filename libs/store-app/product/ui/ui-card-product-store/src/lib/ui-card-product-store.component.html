@@ -27,8 +27,14 @@
 
   <!-- Add to cart button -->
   <mat-card-actions>
+    @if(!Product.countSelected || Product.countSelected === 0){
     <button class="primary-button" (click)="AddToCart(Product)">
       Add To Cart
     </button>
+    } @else {
+    <button class="primary-button" (click)="RemoveFromCart(Product)">
+      Remove From Cart
+    </button>
+    }
   </mat-card-actions>
 </mat-card>

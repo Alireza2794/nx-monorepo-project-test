@@ -1,4 +1,5 @@
 import {
+  ApiResponce,
   OrdersModel,
   ProductModel,
 } from '@angular-monorepo/product-store.model';
@@ -11,6 +12,14 @@ import { Observable, of } from 'rxjs';
 })
 export class ProductStoreApi {
   private _http: HttpClient = inject(HttpClient);
+
+  private baseURL = 'http://localhost:3000/api';
+
+  getProductData$(query: string): Observable<ApiResponce> {
+    return this._http.get<ApiResponce>(
+      `${this.baseURL}/product?query=${query}`
+    );
+  }
 
   data = [
     {
@@ -31,24 +40,32 @@ export class ProductStoreApi {
     },
   ];
 
-  getProductData$(query: string): Observable<ProductModel[]> {
-    return of(this.data.filter((item) => item.title.includes(query)));
+  // getProductData$(query: string): Observable<ProductModel[]> {
+  //   return of(this.data.filter((item) => item.title.includes(query)));
+  // }
+
+  insertProduct$(body: ProductModel): Observable<any> {
+    // this.data.push(body);
+    return this._http.post<ProductModel>(`${this.baseURL}/product`, body);
   }
 
-  insertProduct$(body: ProductModel) {
-    this.data.push(body);
+  updateProduct$(body: ProductModel): Observable<any> {
+    // const productIndex = this.data.findIndex((item) => item.id == body.id);
+    // this.data[productIndex] = body;
+
+    return this._http.put<ProductModel>(
+      `${this.baseURL}/product/${body.id}`,
+      body
+    );
   }
 
-  updateProduct$(body: ProductModel) {
-    const productIndex = this.data.findIndex((item) => item.id == body.id);
-    this.data[productIndex] = body;
-  }
+  removeProduct$(id: number): Observable<any> {
+    // const productIndex = this.data.findIndex((item) => item.id == id);
+    // if (productIndex !== -1) {
+    //   this.data.splice(productIndex, 1);
+    // }
 
-  removeProduct$(id: number) {
-    const productIndex = this.data.findIndex((item) => item.id == id);
-    if (productIndex !== -1) {
-      this.data.splice(productIndex, 1);
-    }
+    return this._http.delete(`${this.baseURL}/product/${id}`);
   }
 
   cartData = {
@@ -61,7 +78,7 @@ export class ProductStoreApi {
     return of(this.cartData);
   }
 
-  addToCart$(body: OrdersModel) {
+  updateCart$(body: OrdersModel) {
     this.cartData.totalCount = body.totalCount;
     this.cartData.totalAmount = body.totalAmount;
     this.cartData.Items = body.Items;

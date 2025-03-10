@@ -2,7 +2,12 @@
   <mat-toolbar>
     <span>Store App</span>
 
-    <button mat-raised-button [matBadge]="orderCount" (click)="onClick()">
+    <button
+      mat-raised-button
+      matBadge="{{ orderCount }}"
+      (click)="onClick()"
+      matTooltip="Total: {{ totalAmount }}$"
+    >
       Cart
     </button>
   </mat-toolbar>

@@ -1,6 +1,7 @@
 <header>
   <lib-ui-header-store
     [orderCount]="store$().orderCount()"
+    [totalAmount]="store$().totalAmount()"
     (clickCart)="clickCart($event)"
   ></lib-ui-header-store>
 </header>
