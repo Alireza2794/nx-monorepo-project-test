@@ -19,3 +19,6 @@ export interface OrdersModel {
 export interface ApiResponce {
   data: ProductModel[];
 }
+export interface ApiResponceCart {
+  data: OrdersModel;
+}

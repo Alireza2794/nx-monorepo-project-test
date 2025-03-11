@@ -1,4 +1,3 @@
-import { LayoutStoreApi } from '@angular-monorepo/layout-store.api';
 import { ProductStoreApi } from '@angular-monorepo/product-store.api';
 import {
   OrdersModel,
@@ -15,7 +14,6 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import { removeEntity, updateEntity } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
@@ -62,109 +60,94 @@ export const ProductsStore = signalStore(
   })),
 
   // Methods
-  withMethods((store, api = inject(ProductStoreApi)) => ({
-    // For upadate query filter
-    updateQuery(query: string): void {
-      patchState(store, (state) => ({
-        filter: { ...state.filter, query },
-      }));
-    },
+  withMethods((store, api = inject(ProductStoreApi)) => {
+    const updateProductsState = (newProducts: ProductModel[]) => {
+      patchState(store, { products: newProducts });
+    };
 
-    // For upadate sort by order filter
-    updateOrder(order: 'asc' | 'desc'): void {
-      patchState(store, (state) => ({
-        filter: { ...state.filter, order },
-      }));
-    },
+    return {
+      // For upadate query filter
+      updateQuery(query: string): void {
+        patchState(store, (state) => ({
+          filter: { ...state.filter, query },
+        }));
+      },
 
-    // For add product
-    addProduct(product: ProductModel): void {
-      api.insertProduct$(product).subscribe(() => {
-        patchState(store, { products: [...store.products(), product] });
-      });
+      // For upadate sort by order filter
+      updateOrder(order: 'asc' | 'desc'): void {
+        patchState(store, (state) => ({
+          filter: { ...state.filter, order },
+        }));
+      },
 
-      // sent to api
-      // api.insertProduct$(product);
-      // update store
-      // patchState(store, { products: [...store.products(), product] });
-    },
-
-    //For  update product
-    updateProduct: (product: ProductModel) => {
-      api.updateProduct$(product).subscribe(() => {
-        // update store
-        updateEntity({
-          id: product.id,
-          changes: (item) => (item = product),
+      // For add product
+      addProduct(product: ProductModel): void {
+        // sent to api
+        api.insertProduct$(product).subscribe((res) => {
+          // update store
+          const newProducts = [...store.products(), res.data];
+          updateProductsState(newProducts);
         });
+      },
 
-        patchState(store, {
-          products: store
+      //For update product
+      updateProduct: (product: ProductModel) => {
+        // sent to api
+        api.updateProduct$(product).subscribe(() => {
+          // update store
+          const newProducts = store
             .products()
-            .map((p) => (p.id === product.id ? { ...p, ...product } : p)),
+            .map((p) => (p.id === product.id ? { ...p, ...product } : p));
+          updateProductsState(newProducts);
         });
-      });
+      },
 
-      // sent to api
-      // api.updateProduct$(product);
-      // update store
-      // updateEntity({
-      //   id: product.id,
-      //   changes: (item) => (item = product),
-      // });
+      // For remove product
+      removeProduct: (id: number) => {
+        // sent to api
+        api.removeProduct$(id).subscribe(
+          () => {
+            // update store
+            const newProducts = store.products().filter((p) => p.id !== id);
+            updateProductsState(newProducts);
+          },
+          (err) => {
+            alert(err.error.message);
+          }
+        );
+      },
 
-      // const allItems = [...store.products()];
-      // const index = allItems.findIndex((x) => x.id === product.id);
-      // allItems[index] = product;
-
-      // patchState(store, {
-      //   products: allItems,
-      // });
-    },
-
-    // For remove product
-    removeProduct: (id: number) => {
-      // sent to api
-      api.removeProduct$(id).subscribe(() => {
-        removeEntity(id);
-        patchState(store, {
-          products: store.products().filter((p) => p.id !== id),
-        });
-      });
-    },
-
-    // Load data From Api by query
-    loadByQuery: rxMethod<string>(
-      pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        tap(() => patchState(store, { isLoading: true })),
-        switchMap((query) => {
-          return api.getProductData$(query).pipe(
-            tapResponse({
-              next: (response) =>
-                patchState(store, { products: response.data }),
-              error: (error: HttpErrorResponse) => console.log(error.message),
-              finalize: () => patchState(store, { isLoading: false }),
-            })
-          );
-        })
-      )
-    ),
-  }))
+      // Load data From Api by query
+      loadByQuery: rxMethod<string>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => patchState(store, { isLoading: true })),
+          switchMap((query) => {
+            return api.getProductData$(query).pipe(
+              tapResponse({
+                next: (response) =>
+                  patchState(store, { products: response.data }),
+                error: (error: HttpErrorResponse) => console.log(error.message),
+                finalize: () => patchState(store, { isLoading: false }),
+              })
+            );
+          })
+        )
+      ),
+    };
+  })
 );
 
 export const OrdersStore = signalStore(
   { providedIn: 'root' },
 
-  // Set by first state
   withState(initialOrderState),
-  // Methods
+
   withMethods(
-    (store, api = inject(ProductStoreApi), cartStore = inject(CartStore)) => ({
-      // Add product to cart
-      addToCart: (product: ProductModel) => {
-        const updatedCartItems = [...store.orders().Items, product];
+    (store, api = inject(ProductStoreApi), cartStore = inject(CartStore)) => {
+      // help function for update cart state
+      const updateCartState = (updatedCartItems: ProductModel[]) => {
         const updatedTotalAmount = updatedCartItems.reduce(
           (sum, item) => sum + Number(item.price),
           0
@@ -176,56 +159,53 @@ export const OrdersStore = signalStore(
           totalAmount: updatedTotalAmount,
           totalCount: updatedOrderCount,
         };
-        // Update local cart state
-        patchState(store, {
-          orders: orders,
-        });
 
-        // Sync product state to main store (ProductStore)
-        api.updateCart$(orders);
+        return orders;
+      };
+
+      // sync cart in state
+      const syncCartToStore = (orders: OrdersModel) => {
+        patchState(store, { orders });
 
         const headerData = {
-          orderCount: updatedOrderCount,
-          totalAmount: updatedTotalAmount,
+          orderCount: orders.totalCount,
+          totalAmount: orders.totalAmount,
         };
 
-        // Sync cart data to layout store to update header
         cartStore.updateProduct(headerData);
-      },
+      };
 
-      // Remove product to cart
-      removeFromCart: (product: ProductModel) => {
-        const updatedCartItems = store
-          .orders()
-          .Items.filter((item) => item.id !== product.id);
-        const updatedTotalAmount = updatedCartItems.reduce(
-          (sum, item) => sum + Number(item.price),
-          0
-        );
-        const updatedOrderCount = updatedCartItems.length;
+      return {
+        // Add product to cart
+        addToCart: (product: ProductModel) => {
+          const updatedCartItems = [...store.orders().Items, product];
+          const orders = updateCartState(updatedCartItems);
 
-        const orders = {
-          Items: updatedCartItems,
-          totalAmount: updatedOrderCount,
-          totalCount: updatedOrderCount,
-        };
-        // Update local cart state
-        patchState(store, {
-          orders: orders,
-        });
+          api.updateCart$(orders).subscribe(() => {
+            syncCartToStore(orders);
+          });
+        },
 
-        // Sync product state to main store (ProductStore)
-        api.updateCart$(orders);
+        // Remove product to cart
+        removeFromCart: (product: ProductModel) => {
+          const updatedCartItems = store
+            .orders()
+            .Items.filter((item) => item.id !== product.id);
+          const orders = updateCartState(updatedCartItems);
 
-        // Announce to OrdersStore (update cart items count)
-        const headerData = {
-          orderCount: updatedOrderCount,
-          totalAmount: updatedTotalAmount,
-        };
+          api.updateCart$(orders).subscribe(() => {
+            syncCartToStore(orders);
+          });
+        },
 
-        // Sync cart data to layout store to update header
-        cartStore.updateProduct(headerData);
-      },
-    })
+        // get Cart Data
+        getCartData: () => {
+          api.getCartData$().subscribe((res) => {
+            const orders = updateCartState(res.data.Items);
+            syncCartToStore(orders);
+          });
+        },
+      };
+    }
   )
 );

@@ -69,10 +69,17 @@ export class ProductStoreMid {
     return this._utility.handleFileInput(input);
   }
 
+  // get Cart Data
+  getCartData$() {
+    return this.orderStore.getCartData();
+  }
+
+  // Add product to cart
   onAddToCart(product: ProductModel) {
     this.orderStore.addToCart(product);
   }
 
+  // Remove product to cart
   onRemoveFromCart(product: ProductModel) {
     this.orderStore.removeFromCart(product);
   }

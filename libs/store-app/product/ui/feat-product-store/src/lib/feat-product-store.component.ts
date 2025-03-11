@@ -44,6 +44,7 @@ export class FeatProductStoreComponent implements OnInit {
 
   ngOnInit() {
     this.getListData();
+    this.getCartData();
   }
 
   // get store date from mid and use to this component
@@ -63,6 +64,10 @@ export class FeatProductStoreComponent implements OnInit {
     // });
 
     //  old code without store for show product list
+  }
+
+  getCartData() {
+    this._mid.getCartData$();
   }
 
   // get search box data and sent to store for search and change state
