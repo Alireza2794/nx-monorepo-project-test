@@ -26,8 +26,9 @@
   <!-- store state -->
   @if (store$().isLoading()) {
   <p>Loading...</p>
-  } @else { @for (item of store$().products(); track item.id) {
+  } @else {
   <div>
+    @for (item of store$().products(); track item.id) {
     <lib-ui-card-product-store
       [Product]="item"
       (addToCart)="addToCart($event)"
@@ -35,8 +36,9 @@
       (remove)="onRemove($event)"
       (removeFromCart)="removeFromCart($event)"
     ></lib-ui-card-product-store>
+    }@empty {
+    <p>Product List is Empty</p>
+    }
   </div>
-  }@empty {
-  <p>Product List is Empty</p>
-  } }
+  }
 </section>

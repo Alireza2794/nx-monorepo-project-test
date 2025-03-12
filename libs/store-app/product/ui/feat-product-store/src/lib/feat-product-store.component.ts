@@ -3,16 +3,25 @@ import { ProductModel } from '@angular-monorepo/product-store.model';
 import { UiCardProductStoreComponent } from '@angular-monorepo/ui-card-product-store';
 import { UiNewProductStoreComponent } from '@angular-monorepo/ui-new-product-store';
 import { UiSearchFilterComponent } from '@angular-monorepo/ui-search-filter';
+import {
+  animate,
+  query,
+  stagger,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  HostBinding,
   inject,
   OnInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
 @Component({
   selector: 'lib-feat-product-store',
   imports: [
@@ -24,11 +33,28 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   templateUrl: './feat-product-store.component.html',
   styleUrl: './feat-product-store.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('pageAnimations', [
+      transition(':enter', [
+        query('.hero, header', [
+          style({ opacity: 0, transform: 'translateY(-100px)' }),
+          stagger(-30, [
+            animate(
+              '500ms cubic-bezier(0.35, 0, 0.25, 1)',
+              style({ opacity: 1, transform: 'none' })
+            ),
+          ]),
+        ]),
+      ]),
+    ]),
+  ],
 })
 export class FeatProductStoreComponent implements OnInit {
   private _mid: ProductStoreMid = inject(ProductStoreMid);
   readonly dialog = inject(MatDialog);
 
+  @HostBinding('@pageAnimations')
+  public animatePage = true;
   //  old code without store for show product list
 
   // searchFilter = signal<string>('');
@@ -88,7 +114,7 @@ export class FeatProductStoreComponent implements OnInit {
     const dialogRef = this.dialog.open(UiNewProductStoreComponent, {
       minWidth: '50dvw',
       width: '50dvw',
-      height: '50dvh',
+      height: '55dvh',
       data: id === 0 ? this.onNew() : this.onEdit(id),
     });
 

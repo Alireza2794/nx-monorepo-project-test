@@ -15,10 +15,11 @@ header {
 
 section {
   padding: 1rem;
-  display: flex;
-  align-items: center;
 
   div {
+    display: grid;
+    grid-template-columns: 320px 320px 320px;
+    gap: 50px;
     margin: 0 25px;
   }
 }

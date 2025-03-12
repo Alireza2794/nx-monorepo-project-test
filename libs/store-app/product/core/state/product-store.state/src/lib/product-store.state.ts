@@ -6,6 +6,9 @@ import {
 import { CartStore } from '@angular-monorepo/store-main.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
+import {
+  MatSnackBar
+} from '@angular/material/snack-bar';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -60,83 +63,109 @@ export const ProductsStore = signalStore(
   })),
 
   // Methods
-  withMethods((store, api = inject(ProductStoreApi)) => {
-    const updateProductsState = (newProducts: ProductModel[]) => {
-      patchState(store, { products: newProducts });
-    };
+  withMethods(
+    (store, api = inject(ProductStoreApi), snackBar = inject(MatSnackBar)) => {
+      const updateProductsState = (newProducts: ProductModel[]) => {
+        patchState(store, { products: newProducts });
+      };
 
-    return {
-      // For upadate query filter
-      updateQuery(query: string): void {
-        patchState(store, (state) => ({
-          filter: { ...state.filter, query },
-        }));
-      },
-
-      // For upadate sort by order filter
-      updateOrder(order: 'asc' | 'desc'): void {
-        patchState(store, (state) => ({
-          filter: { ...state.filter, order },
-        }));
-      },
-
-      // For add product
-      addProduct(product: ProductModel): void {
-        // sent to api
-        api.insertProduct$(product).subscribe((res) => {
-          // update store
-          const newProducts = [...store.products(), res.data];
-          updateProductsState(newProducts);
+      const toast = (message: string) => {
+        snackBar.open(message, 'OK', {
+          horizontalPosition: 'start',
+          verticalPosition: 'bottom',
         });
-      },
+      };
 
-      //For update product
-      updateProduct: (product: ProductModel) => {
-        // sent to api
-        api.updateProduct$(product).subscribe(() => {
-          // update store
-          const newProducts = store
-            .products()
-            .map((p) => (p.id === product.id ? { ...p, ...product } : p));
-          updateProductsState(newProducts);
-        });
-      },
+      return {
+        // For upadate query filter
+        updateQuery(query: string): void {
+          patchState(store, (state) => ({
+            filter: { ...state.filter, query },
+          }));
+        },
 
-      // For remove product
-      removeProduct: (id: number) => {
-        // sent to api
-        api.removeProduct$(id).subscribe(
-          () => {
-            // update store
-            const newProducts = store.products().filter((p) => p.id !== id);
-            updateProductsState(newProducts);
-          },
-          (err) => {
-            alert(err.error.message);
-          }
-        );
-      },
+        // For upadate sort by order filter
+        updateOrder(order: 'asc' | 'desc'): void {
+          patchState(store, (state) => ({
+            filter: { ...state.filter, order },
+          }));
+        },
 
-      // Load data From Api by query
-      loadByQuery: rxMethod<string>(
-        pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          tap(() => patchState(store, { isLoading: true })),
-          switchMap((query) => {
-            return api.getProductData$(query).pipe(
-              tapResponse({
-                next: (response) =>
-                  patchState(store, { products: response.data }),
-                error: (error: HttpErrorResponse) => console.log(error.message),
-                finalize: () => patchState(store, { isLoading: false }),
-              })
-            );
-          })
-        )
-      ),
-    };
-  })
+        // For add product
+        addProduct(product: ProductModel): void {
+          // sent to api
+          api.insertProduct$(product).subscribe(
+            (res) => {
+              // update store
+              const newProducts = [...store.products(), res.data];
+              updateProductsState(newProducts);
+
+              toast(res.message);
+            },
+            (err) => {
+              toast(err.error.message);
+            }
+          );
+        },
+
+        //For update product
+        updateProduct: (product: ProductModel) => {
+          // sent to api
+          api.updateProduct$(product).subscribe(
+            (res) => {
+              // update store
+              const newProducts = store
+                .products()
+                .map((p) => (p.id === product.id ? { ...p, ...product } : p));
+              updateProductsState(newProducts);
+
+              toast(res.message);
+            },
+            (err) => {
+              toast(err.error.message);
+            }
+          );
+        },
+
+        // For remove product
+        removeProduct: (id: number) => {
+          // sent to api
+          api.removeProduct$(id).subscribe(
+            (res) => {
+              // update store
+              const newProducts = store.products().filter((p) => p.id !== id);
+              updateProductsState(newProducts);
+
+              toast(res.message);
+            },
+            (err) => {
+              toast(err.error.message);
+            }
+          );
+        },
+
+        // Load data From Api by query
+        loadByQuery: rxMethod<string>(
+          pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            tap(() => patchState(store, { isLoading: true })),
+            switchMap((query) => {
+              return api.getProductData$(query).pipe(
+                tapResponse({
+                  next: (response) =>
+                    patchState(store, { products: response.data }),
+                  error: (error: HttpErrorResponse) =>
+                    console.log(error.message),
+                  finalize: () => patchState(store, { isLoading: false }),
+                })
+              );
+            })
+          )
+        ),
+      };
+    }
+  )
 );
 
 export const OrdersStore = signalStore(
@@ -145,7 +174,12 @@ export const OrdersStore = signalStore(
   withState(initialOrderState),
 
   withMethods(
-    (store, api = inject(ProductStoreApi), cartStore = inject(CartStore)) => {
+    (
+      store,
+      api = inject(ProductStoreApi),
+      cartStore = inject(CartStore),
+      snackBar = inject(MatSnackBar)
+    ) => {
       // help function for update cart state
       const updateCartState = (updatedCartItems: ProductModel[]) => {
         const updatedTotalAmount = updatedCartItems.reduce(
@@ -175,15 +209,28 @@ export const OrdersStore = signalStore(
         cartStore.updateProduct(headerData);
       };
 
+      const toast = (message: string) => {
+        snackBar.open(message, 'OK', {
+          horizontalPosition: 'start',
+          verticalPosition: 'bottom',
+        });
+      };
+
       return {
         // Add product to cart
         addToCart: (product: ProductModel) => {
           const updatedCartItems = [...store.orders().Items, product];
           const orders = updateCartState(updatedCartItems);
 
-          api.updateCart$(orders).subscribe(() => {
-            syncCartToStore(orders);
-          });
+          api.updateCart$(orders).subscribe(
+            (res) => {
+              syncCartToStore(orders);
+              toast(res.message);
+            },
+            (err) => {
+              toast(err.error.message);
+            }
+          );
         },
 
         // Remove product to cart
@@ -193,9 +240,15 @@ export const OrdersStore = signalStore(
             .Items.filter((item) => item.id !== product.id);
           const orders = updateCartState(updatedCartItems);
 
-          api.updateCart$(orders).subscribe(() => {
-            syncCartToStore(orders);
-          });
+          api.updateCart$(orders).subscribe(
+            (res) => {
+              syncCartToStore(orders);
+              toast(res.message);
+            },
+            (err) => {
+              toast(err.error.message);
+            }
+          );
         },
 
         // get Cart Data

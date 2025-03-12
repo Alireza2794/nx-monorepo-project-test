@@ -61,9 +61,6 @@
       "@angular-monorepo/ui-header-store": [
         "libs/store-app/layout/ui/ui-header-store/src/index.ts"
       ],
-      "@angular-monorepo/ui-list-product-store": [
-        "libs/store-app/product/ui/ui-list-product-store/src/index.ts"
-      ],
       "@angular-monorepo/ui-new-product-store": [
         "libs/store-app/product/ui/ui-new-product-store/src/index.ts"
       ],

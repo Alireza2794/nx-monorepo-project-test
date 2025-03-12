@@ -7,7 +7,11 @@
   <form [formGroup]="productForm">
     <div>
       <!-- Title -->
-      <mat-form-field appearance="outline">
+      <mat-form-field
+        appearance="outline"
+        [@wobble]="wobbleField && productForm.get('title')?.value === ''"
+        (@wobble.done)="wobbleField = false"
+      >
         <mat-label>Product Title:</mat-label>
         <input matInput formControlName="title" required />
         @if (productForm.get('title')?.errors) {
@@ -15,7 +19,11 @@
         }
       </mat-form-field>
       <!-- Description -->
-      <mat-form-field appearance="outline">
+      <mat-form-field
+        appearance="outline"
+        [@wobble]="wobbleField && productForm.get('description')?.value === ''"
+        (@wobble.done)="wobbleField = false"
+      >
         <mat-label>Product Description:</mat-label>
         <textarea matInput formControlName="description" required></textarea>
         @if (productForm.get('description')?.errors) {
@@ -23,7 +31,11 @@
         }
       </mat-form-field>
       <!-- Price -->
-      <mat-form-field appearance="outline">
+      <mat-form-field
+        appearance="outline"
+        [@wobble]="wobbleField && productForm.get('price')?.value === ''"
+        (@wobble.done)="wobbleField = false"
+      >
         <mat-label>Product Price:</mat-label>
         <input matInput formControlName="price" required />
         @if (productForm.get('price')?.errors) {
@@ -37,6 +49,8 @@
           type="file"
           [multiple]="false"
           (change)="handleFileInput($event)"
+          [@wobble]="wobbleField && productForm.get('imageUrl')?.value === ''"
+          (@wobble.done)="wobbleField = false"
         />
 
         @if(productForm.get('imageUrl')?.value){
@@ -49,8 +63,7 @@
     <div class="button-section">
       <button
         mat-button
-        [mat-dialog-close]="productForm.value"
-        [disabled]="productForm.invalid"
+        (click)="productForm.valid ? onSubmit() : (wobbleField = true)"
         class="primary-button"
       >
         @if (!this.isEdit()) { Add Product } @else { Edit Product}
