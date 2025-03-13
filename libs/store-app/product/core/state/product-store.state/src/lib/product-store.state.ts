@@ -6,9 +6,7 @@ import {
 import { CartStore } from '@angular-monorepo/store-main.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
-import {
-  MatSnackBar
-} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -55,10 +53,10 @@ export const ProductsStore = signalStore(
     productsCount: computed(() => products().length),
     sortedproducts: computed(() => {
       const direction = filter.order() === 'asc' ? 1 : -1;
-
-      return products().toSorted(
-        (a, b) => direction * a.title.localeCompare(b.title)
-      );
+      return products().toSorted((a, b) => direction * (a.price - b.price));
+      // return products().toSorted(
+      //   (a, b) => direction * a.price.localeCompare(b.price)
+      // );
     }),
   })),
 
@@ -154,7 +152,7 @@ export const ProductsStore = signalStore(
               return api.getProductData$(query).pipe(
                 tapResponse({
                   next: (response) =>
-                    patchState(store, { products: response.data }),
+                    patchState(store, { products: [...response.data] }),
                   error: (error: HttpErrorResponse) =>
                     console.log(error.message),
                   finalize: () => patchState(store, { isLoading: false }),
@@ -183,7 +181,7 @@ export const OrdersStore = signalStore(
       // help function for update cart state
       const updateCartState = (updatedCartItems: ProductModel[]) => {
         const updatedTotalAmount = updatedCartItems.reduce(
-          (sum, item) => sum + Number(item.price),
+          (sum, item) => sum + item.price,
           0
         );
         const updatedOrderCount = updatedCartItems.length;

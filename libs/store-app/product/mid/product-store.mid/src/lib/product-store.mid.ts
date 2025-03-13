@@ -44,6 +44,10 @@ export class ProductStoreMid {
     this.store.updateQuery(query);
   }
 
+  updateSort(sort: 'asc' | 'desc') {
+    this.store.updateOrder(sort);
+  }
+
   // get new product data from feat and sent to store for set api and change state
   insertProduct$(body: ProductModel) {
     this.store.addProduct(body);
