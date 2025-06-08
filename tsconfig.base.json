@@ -55,6 +55,9 @@
         "libs/store-app/core/state/store-main.state/src/index.ts"
       ],
       "@angular-monorepo/ui": ["libs/shared/ui/src/index.ts"],
+      "@angular-monorepo/ui-button-product-store": [
+        "libs/store-app/product/ui/ui-button-product-store/src/index.ts"
+      ],
       "@angular-monorepo/ui-card-product-store": [
         "libs/store-app/product/ui/ui-card-product-store/src/index.ts"
       ],

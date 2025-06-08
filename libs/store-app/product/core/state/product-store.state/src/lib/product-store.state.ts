@@ -54,9 +54,6 @@ export const ProductsStore = signalStore(
     sortedproducts: computed(() => {
       const direction = filter.order() === 'asc' ? 1 : -1;
       return products().toSorted((a, b) => direction * (a.price - b.price));
-      // return products().toSorted(
-      //   (a, b) => direction * a.price.localeCompare(b.price)
-      // );
     }),
   })),
 
@@ -71,6 +68,7 @@ export const ProductsStore = signalStore(
         snackBar.open(message, 'OK', {
           horizontalPosition: 'start',
           verticalPosition: 'bottom',
+          duration: 2000,
         });
       };
 

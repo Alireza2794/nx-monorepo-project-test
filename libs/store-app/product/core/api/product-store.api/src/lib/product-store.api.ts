@@ -38,7 +38,6 @@ export class ProductStoreApi {
   }
 
   getCartData$(): Observable<ApiResponceCart> {
-    // return of(this.cartData);
     return this._http.get<ApiResponceCart>(`${this.baseURL}/cart`);
   }
 
